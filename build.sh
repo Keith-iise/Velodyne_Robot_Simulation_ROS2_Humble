@@ -1,9 +1,16 @@
-
 #!/bin/bash
 
-# 切换到工作空间根目录（假设当前脚本在 workspace_root/script/ 中）
-cd "$(dirname "$(dirname "$0")")"
+unset AMENT_PREFIX_PATH CMAKE_PREFIX_PATH
+source /opt/ros/humble/setup.bash
 
-# 编译 文件
-colcon build --symlink-install --cmake-args   -DROS_EDITION=ROS2   -DHUMBLE_ROS=humble  
-
+if [ $# -eq 0 ]; then
+    echo "执行全部构建"
+    colcon build
+elif [ "$1" = "symlink" ]; then
+    echo "执行软链接构建 --symlink-install"
+    colcon build --symlink-install
+else
+    PKG_NAME="$1"
+    echo "指定功能包构建: $PKG_NAME"
+    colcon build --packages-select "$PKG_NAME"
+fi

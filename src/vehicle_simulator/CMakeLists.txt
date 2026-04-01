@@ -30,6 +30,7 @@ find_package(pcl_ros REQUIRED)
 
 add_executable(
   vehicleSimulator 
+  src/main.cpp
   src/vehicleSimulator.cpp
 )
 

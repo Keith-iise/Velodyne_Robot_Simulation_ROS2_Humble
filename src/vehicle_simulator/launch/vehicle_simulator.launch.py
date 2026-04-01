@@ -16,10 +16,12 @@ def generate_launch_description():
     #定义参数引用
     use_sim_time = LaunchConfiguration('use_sim_time')
     world_name = LaunchConfiguration('world_name')
+    rate = LaunchConfiguration('rate')
 
     #生命启动参数
     declare_world_name = DeclareLaunchArgument('world_name' , default_value='indoor' , description='')
     declare_use_sim_time = DeclareLaunchArgument('use_sim_time' , default_value='true' , description='')
+    declare_rate = DeclareLaunchArgument('rate' , default_value='200.0' , description='')
 
     # gazebo
     start_gazebo = IncludeLaunchDescription(
@@ -70,10 +72,6 @@ def generate_launch_description():
         output='screen',
 
     )
-
-    # --- 新增：静态 TF 发布节点 ---
-    # 参数顺序：x y z qx qy qz qw 或 x y z yaw pitch roll
-    # 这里使用的是：x y z roll pitch yaw
     static_tf_pub = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -94,7 +92,6 @@ def generate_launch_description():
         ],
         output='screen',
     )
-
     # vehicleSimulator
     start_vehicle_simulator = Node(
         package='vehicle_simulator',
@@ -102,6 +99,7 @@ def generate_launch_description():
         name='vehicleSimulator',
         parameters=[{
             'use_sim_time': use_sim_time,
+            'node_rate': rate,
         }],
         output='screen',
 
@@ -109,12 +107,12 @@ def generate_launch_description():
 
     # 延迟启动
     delayed_start_vehicle_simulator = TimerAction(
-        period=8.0,
+        period=5.0,
         actions=[start_vehicle_simulator]
     )
 
     delayed_spawn_entities = TimerAction(
-        period=5.0,
+        period=3.0,
         actions=[
             spawn_robot,
             spawn_lidar,
@@ -125,6 +123,7 @@ def generate_launch_description():
     ld = LaunchDescription()
     ld.add_action(declare_use_sim_time)
     ld.add_action(declare_world_name)
+    ld.add_action(declare_rate)
     ld.add_action(OpaqueFunction(function=declare_world_action,args=[world_name]))
 
     ld.add_action(start_gazebo)
