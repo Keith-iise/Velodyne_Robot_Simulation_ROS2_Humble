@@ -57,23 +57,12 @@ source install/setup.bash
 
 ## 启动示例
 
-- 启动车辆模拟器：
-
-```bash
-ros2 launch vehicle_simulator vehicle_simulator.launch.py
-```
-
 - 启动机器人工具箱 bringup：
 
 ```bash
 ros2 launch robot_toolbox bringup.launch.py
 ```
 
-- 启动摇杆控制器：
-
-```bash
-ros2 launch robot_toolbox joy_controller.launch.py
-```
 
 ## 目录结构
 
